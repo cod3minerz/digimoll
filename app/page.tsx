@@ -12,13 +12,13 @@ import {
   Form,
   Input,
   Label,
+  ListBox,
   Link as HeroLink,
   NumberField,
   ProgressBar,
-  Radio,
-  RadioGroup,
   ScrollShadow,
   SearchField,
+  Select,
   Separator,
   Surface,
   Tabs,
@@ -458,31 +458,56 @@ function QuickTopUp() {
                 ) : null}
               </NumberField>
             ) : (
-              <RadioGroup
+              <Select
+                isRequired
+                fullWidth
+                className="topup-tariff-select"
                 name="tariff"
+                placeholder="Выберите срок"
                 value={tariffId}
                 variant="secondary"
-                onChange={setTariffId}
+                onChange={(key) => key && setTariffId(String(key))}
               >
-                <Label className="sr-only">Выберите тариф</Label>
-                <div className="topup-tariff-pills">
-                  {selectedProduct.tariffs.map((item) => (
-                    <Radio
-                      key={item.id}
-                      className="topup-tariff-pill"
-                      data-selected={tariffId === item.id}
-                      value={item.id}
-                    >
-                      <Radio.Content>
-                        <Radio.Control>
-                          <Radio.Indicator />
-                        </Radio.Control>
-                        <span>{item.title.replace("Premium ", "")}</span>
-                      </Radio.Content>
-                    </Radio>
-                  ))}
-                </div>
-              </RadioGroup>
+                <Label className="topup-section-label">Срок подписки</Label>
+                <Select.Trigger className="topup-select-trigger">
+                  <Select.Value>
+                    {({ defaultChildren, isPlaceholder }) => {
+                      if (isPlaceholder) return defaultChildren;
+
+                      return (
+                        <span className="topup-select-value">
+                          <span>{tariff.title}</span>
+                          <span>{formatRub(tariff.price)}</span>
+                        </span>
+                      );
+                    }}
+                  </Select.Value>
+                  <Select.Indicator />
+                </Select.Trigger>
+                <Select.Popover className="topup-select-popover">
+                  <ListBox>
+                    {selectedProduct.tariffs.map((item) => (
+                      <ListBox.Item
+                        key={item.id}
+                        id={item.id}
+                        className="topup-select-option"
+                        textValue={`${item.title} ${formatRub(item.price)}`}
+                      >
+                        <span className="topup-select-option-main">
+                          <span>{item.title}</span>
+                          <span>{formatRub(item.price)}</span>
+                        </span>
+                        {item.discountLabel ? (
+                          <Chip className="topup-select-discount" color="success" size="sm" variant="soft">
+                            {item.discountLabel}
+                          </Chip>
+                        ) : null}
+                        <ListBox.ItemIndicator />
+                      </ListBox.Item>
+                    ))}
+                  </ListBox>
+                </Select.Popover>
+              </Select>
             )}
           </div>
 

@@ -86,6 +86,12 @@
 html {
   min-width: 320px;
   scroll-behavior: smooth;
+  /* Prevent mobile browsers (iOS Safari, Chrome/Android) from silently
+     auto-inflating text size on real devices. Without this, controls can
+     render taller than desktop/dev-tools preview ever shows, which throws
+     off every height-proportional corner radius below. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -181,7 +187,7 @@ a {
 
 .header-catalog.button {
   --ctrl-h: 48px;
-  min-height: var(--ctrl-h) !important;
+  height: var(--ctrl-h) !important;
   border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
 }
 
@@ -221,7 +227,7 @@ a {
 .header-action.button {
   --ctrl-h: 52px;
   display: flex;
-  min-height: var(--ctrl-h) !important;
+  height: var(--ctrl-h) !important;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -284,9 +290,10 @@ a {
     --ctrl-h: 55px;
     display: flex;
     min-width: 64px;
-    min-height: var(--ctrl-h);
+    height: var(--ctrl-h);
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 3px;
     border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
     padding: 7px 8px;
@@ -634,11 +641,13 @@ a {
 }
 
 .topup-checkout-fields--subscription {
-  grid-template-columns: minmax(210px, 0.72fr) minmax(300px, 1fr);
+  grid-template-columns: minmax(210px, 0.82fr) minmax(260px, 1fr);
 }
 
 .topup-login-field,
-.topup-amount-field {
+.topup-amount-field,
+.topup-tariff-select {
+  min-width: 0;
   gap: 5px;
 }
 
@@ -651,7 +660,7 @@ a {
 
 .topup-input.input {
   --ctrl-h: 48px;
-  min-height: var(--ctrl-h);
+  height: var(--ctrl-h);
   border: 0;
   border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   background: var(--field-background);
@@ -662,7 +671,7 @@ a {
 .topup-number-group {
   --ctrl-h: 48px;
   display: grid !important;
-  min-height: var(--ctrl-h);
+  height: var(--ctrl-h);
   grid-template-columns: 34px minmax(0, 1fr) auto 34px;
   align-items: center;
   overflow: hidden;
@@ -705,42 +714,101 @@ a {
   height: 16px;
 }
 
-.topup-tariff-pills {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.topup-tariff-pill {
+.topup-select-trigger.select__trigger {
   --ctrl-h: 48px;
-  position: relative;
+  display: grid !important;
+  width: 100% !important;
+  min-width: 0;
+  height: var(--ctrl-h) !important;
   min-height: var(--ctrl-h) !important;
+  grid-template-columns: minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  box-sizing: border-box;
   border: 0 !important;
   border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
-  background: var(--field-background);
-  padding: 10px 10px 10px 38px !important;
+  background: var(--field-background) !important;
+  padding: 0 12px 0 14px !important;
 }
 
-.topup-tariff-pill[data-selected="true"] {
-  outline: 1px solid var(--accent);
+.topup-select-trigger .select__value {
+  min-width: 0;
+  overflow: hidden;
 }
 
-.topup-tariff-pill .radio__content {
-  display: contents;
+.topup-select-trigger .select__indicator {
+  display: grid;
+  width: 18px;
+  min-width: 18px;
+  height: 18px;
+  place-items: center;
+  color: var(--muted);
 }
 
-.topup-tariff-pill .radio__control {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 20px !important;
-  height: 20px !important;
-  border-radius: 999px !important;
-}
-
-.topup-tariff-pill span:last-child {
-  font-size: 0.86rem;
+.topup-select-value {
+  display: flex;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 0.94rem;
   font-weight: 700;
+}
+
+.topup-select-value span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topup-select-value span:last-child {
+  flex: 0 0 auto;
+}
+
+.topup-select-popover.select__popover {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  padding: 6px;
+}
+
+.topup-select-option {
+  display: grid !important;
+  min-height: 48px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  border-radius: 14px !important;
+  padding: 9px 10px !important;
+}
+
+.topup-select-option-main {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  font-weight: 700;
+}
+
+.topup-select-option-main span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topup-select-option-main span:last-child {
+  flex: 0 0 auto;
+}
+
+.topup-select-discount.chip {
+  min-height: 22px !important;
+  font-weight: 800;
 }
 
 .topup-payline {
@@ -762,7 +830,7 @@ a {
 
 .topup-cta.button {
   --ctrl-h: 48px;
-  min-height: var(--ctrl-h) !important;
+  height: var(--ctrl-h) !important;
   border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
   font-size: 0.95rem !important;
   font-weight: 800 !important;
@@ -1022,7 +1090,7 @@ a {
 
 .footer-social-button.button {
   --ctrl-h: 44px;
-  min-height: var(--ctrl-h) !important;
+  height: var(--ctrl-h) !important;
   border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
 }
 
@@ -1078,7 +1146,7 @@ a {
 
 .footer-support-card .card__footer .button {
   --ctrl-h: 48px;
-  min-height: var(--ctrl-h) !important;
+  height: var(--ctrl-h) !important;
   border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
 }
 
@@ -1408,12 +1476,15 @@ a {
   .topup-input.input,
   .topup-number-group {
     --ctrl-h: 56px;
-    min-height: var(--ctrl-h);
+    height: var(--ctrl-h);
     border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   }
 
-  .topup-tariff-pills {
-    grid-template-columns: 1fr;
+  .topup-select-trigger.select__trigger {
+    --ctrl-h: 56px;
+    height: var(--ctrl-h) !important;
+    min-height: var(--ctrl-h) !important;
+    border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
   }
 
   .topup-payline {
@@ -1426,7 +1497,7 @@ a {
 
   .topup-cta.button {
     --ctrl-h: 44px;
-    min-height: var(--ctrl-h) !important;
+    height: var(--ctrl-h) !important;
     border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
     font-size: 0.9rem !important;
   }
