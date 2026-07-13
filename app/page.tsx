@@ -34,11 +34,8 @@ import {
   DevicePhoneMobileIcon,
   EnvelopeIcon,
   GiftIcon,
-  HeartIcon,
-  HomeIcon,
   IdentificationIcon,
   MinusIcon,
-  PaperAirplaneIcon,
   PlusIcon,
   PuzzlePieceIcon,
   ShieldCheckIcon,
@@ -54,9 +51,22 @@ import {
   promoSlides,
   type Product,
 } from "@/lib/mock-data";
+import { MobileNav } from "@/components/MobileNav";
 
 type OrderStatus = "idle" | "created" | "paid" | "processing" | "delivered" | "error";
 type HeroIcon = ComponentType<SVGProps<SVGSVGElement>>;
+
+function TelegramIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <path
+        clipRule="evenodd"
+        fillRule="evenodd"
+        d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24Zm5.94 8.19c-.19 2.02-.98 6.9-1.38 9.16-.17.96-.5 1.28-.83 1.31-.71.07-1.24-.47-1.93-.92-1.07-.7-1.68-1.14-2.72-1.82-1.2-.79-.42-1.22.26-1.93.18-.19 3.25-2.98 3.31-3.23a.24.24 0 0 0-.06-.21c-.07-.06-.16-.04-.24-.02-.1.02-1.7 1.08-4.8 3.19-.45.31-.87.46-1.24.45-.41-.01-1.19-.23-1.78-.42-.72-.23-1.29-.35-1.24-.74.03-.2.3-.4.8-.61 3.14-1.37 5.24-2.27 6.29-2.71 3-1.25 3.62-1.47 4.03-1.47.09 0 .29.02.42.13.11.09.14.21.15.3-.01.06.01.24 0 .37Z"
+      />
+    </svg>
+  );
+}
 
 const quickProductIds = ["steam-wallet", "telegram-stars", "telegram-premium", "robux"];
 const quickProducts = quickProductIds.map((id) => productById(id));
@@ -159,7 +169,7 @@ const categoryIconMap: Record<Product["category"], HeroIcon> = {
   ai: SparklesIcon,
   subscriptions: DevicePhoneMobileIcon,
   software: ComputerDesktopIcon,
-  telegram: PaperAirplaneIcon,
+  telegram: TelegramIcon,
   giftCards: GiftIcon,
 };
 
@@ -233,10 +243,10 @@ function Header() {
         <div className="header-actions ml-auto hidden min-[901px]:flex">
           <Button className="header-action" variant="secondary" onPress={() => (window.location.href = "/account")}>
             <CurrencyDollarIcon aria-hidden="true" className="header-action-icon header-action-icon--brand" />
-            <span className="header-action-label">DigiCoins</span>
+            <span className="header-action-label font-digicoins">DigiCoins</span>
           </Button>
           <Button className="header-action" variant="secondary">
-            <PaperAirplaneIcon aria-hidden="true" className="header-action-icon" />
+            <TelegramIcon aria-hidden="true" className="header-action-icon" />
             <span className="header-action-label">Telegram-бот</span>
           </Button>
           <Button className="header-action" variant="secondary" onPress={() => (window.location.href = "/account")}>
@@ -246,26 +256,6 @@ function Header() {
         </div>
       </div>
     </header>
-  );
-}
-
-function MobileNav() {
-  const items = [
-    { id: "home", label: "Главная", icon: HomeIcon, href: "/", active: true },
-    { id: "catalog", label: "Каталог", icon: Squares2X2Icon, href: "#topup", active: false },
-    { id: "favorites", label: "Избранное", icon: HeartIcon, href: "#topup", active: false },
-    { id: "profile", label: "Профиль", icon: UserIcon, href: "/account", active: false },
-  ];
-
-  return (
-    <nav aria-label="Основная навигация" className="mobile-nav">
-      {items.map((item) => (
-        <HeroLink key={item.id} className="mobile-nav-item" data-active={item.active} href={item.href}>
-          <item.icon aria-hidden="true" className="mobile-nav-icon" />
-          <span>{item.label}</span>
-        </HeroLink>
-      ))}
-    </nav>
   );
 }
 
@@ -281,6 +271,7 @@ function QuickTopUp() {
   const amountConfig = amountProductConfig[selectedId];
   const isSubscription = !amountConfig;
   const total = isSubscription ? tariff.price : Math.round((amount ?? 0) * amountConfig.unitPrice);
+  const digicoinsEarned = Math.max(1, Math.round(total * 0.03));
   const hasLogin = login.trim().length > 2;
   const hasAmount = isSubscription || ((amount ?? 0) >= amountConfig.min);
   const progress = status === "delivered" ? 100 : hasLogin && hasAmount ? 66 : hasLogin ? 33 : 0;
@@ -522,10 +513,6 @@ function QuickTopUp() {
           ) : null}
 
           <div className="topup-payline">
-            <Chip className="topup-cashback-badge" color="accent" size="sm" variant="soft">
-              <CurrencyDollarIcon aria-hidden="true" className="ui-icon" />
-              +3% в DigiCoins
-            </Chip>
             <Button
               fullWidth
               className="topup-cta"
@@ -535,6 +522,9 @@ function QuickTopUp() {
             >
               Оплатить {formatRub(total)}
             </Button>
+            <Chip className="topup-cashback-badge" color="accent" size="sm" variant="soft">
+              <span className="font-digicoins">+{digicoinsEarned} ДигиКоинов</span>
+            </Chip>
           </div>
         </Form>
       </Surface>
@@ -665,7 +655,7 @@ function CategoriesGrid() {
   const trustItems = ["Безопасная сделка", "Мгновенная доставка", "Поддержка 24/7"];
 
   return (
-    <section className="app-shell categories-section">
+    <section className="app-shell categories-section" id="categories">
       <div className="categories-head">
         <Chip color="accent" size="sm" variant="soft">
           Каталог
@@ -716,7 +706,7 @@ function FAQ() {
       <Typography align="center" color="muted" type="body">
         Ответы на самые популярные вопросы о покупке и использовании товаров на Digimoll.
       </Typography>
-      <Accordion className="mx-auto mt-6 max-w-5xl" variant="surface">
+      <Accordion className="mt-6" variant="surface">
         {faqItems.map((item) => (
           <Accordion.Item key={item.title}>
             <Accordion.Heading>
@@ -739,7 +729,7 @@ function Footer() {
   const shopLinks = ["Steam", "Telegram Stars", "Telegram Premium", "Robux", "Все категории"];
   const infoLinks = ["Как купить", "Доставка и оплата", "Гарантии и возврат", "Отзывы", "FAQ"];
   const socialLinks = [
-    { label: "Telegram", icon: PaperAirplaneIcon, href: "#topup", primary: true },
+    { label: "Telegram", icon: TelegramIcon, href: "#topup", primary: true },
     { label: "VK", asset: "/social/vk.svg", href: "#topup" },
     { label: "Discord", asset: "/social/discord.svg", href: "#topup" },
   ];
@@ -820,7 +810,7 @@ function Footer() {
               </Card.Header>
               <Card.Footer>
                 <Button fullWidth>
-                  <PaperAirplaneIcon aria-hidden="true" className="ui-icon" />
+                  <TelegramIcon aria-hidden="true" className="ui-icon" />
                   Telegram: @digimoll_support
                 </Button>
               </Card.Footer>

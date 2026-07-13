@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@heroui/react";
 import { orders, subscriptions } from "@/lib/mock-data";
+import { MobileNav } from "@/components/MobileNav";
 
 function formatRub(value: number) {
   return new Intl.NumberFormat("ru-RU").format(value) + " ₽";
@@ -180,6 +181,7 @@ export default function AccountPage() {
         <OrderHistory />
         <ReferralCard />
       </main>
+      <MobileNav />
     </>
   );
 }

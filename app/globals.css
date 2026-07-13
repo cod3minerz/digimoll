@@ -280,10 +280,12 @@ a {
       color-mix(in oklab, var(--surface) 52%, transparent);
     padding: 8px 10px;
     box-shadow:
-      0 18px 40px color-mix(in oklab, var(--background) 75%, transparent),
+      0 8px 20px color-mix(in oklab, var(--background) 55%, transparent),
       inset 0 1px 0 color-mix(in oklab, var(--foreground) 28%, transparent);
     backdrop-filter: blur(24px) saturate(180%);
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
+    will-change: transform;
+    isolation: isolate;
   }
 
   .mobile-nav-item {
@@ -778,12 +780,13 @@ a {
 }
 
 .topup-select-option {
+  --ctrl-h: 48px;
   display: grid !important;
-  min-height: 48px;
+  height: var(--ctrl-h);
   grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 10px;
   align-items: center;
-  border-radius: 14px !important;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
   padding: 9px 10px !important;
 }
 
@@ -812,20 +815,40 @@ a {
 }
 
 .topup-payline {
-  display: grid;
-  gap: 6px;
-  justify-items: end;
+  position: relative;
   align-self: end;
 }
 
 .topup-cashback-badge.chip {
-  gap: 5px;
+  position: absolute;
+  z-index: 2;
+  top: -8px;
+  right: 10px;
+  padding-inline: 7px !important;
+  font-size: 0.62rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  background: var(--snow) !important;
+  color: var(--accent) !important;
 }
 
-.topup-cashback-badge .ui-icon {
-  width: 14px;
-  height: 14px;
+.font-digicoins {
+  font-family: "Roboto Flex", var(--font-sans, sans-serif);
+  font-variation-settings:
+    "slnt" -10,
+    "wdth" 151,
+    "wght" 800,
+    "GRAD" -200,
+    "XOPQ" 113,
+    "XTRA" 468,
+    "YOPQ" 101,
+    "YTAS" 750,
+    "YTDE" -98,
+    "YTFI" 788,
+    "YTLC" 514,
+    "YTUC" 712,
+    "opsz" 144;
 }
 
 .topup-cta.button {
@@ -1042,27 +1065,27 @@ a {
 }
 
 .footer-section {
-  margin-top: clamp(38px, 5vw, 76px);
-  padding-bottom: 40px;
+  margin-top: clamp(28px, 4vw, 56px);
+  padding-bottom: 24px;
 }
 
 .footer-surface {
   border: 1px solid var(--border) !important;
   border-radius: 24px !important;
   background: var(--surface-secondary);
-  padding: 36px 40px 28px !important;
+  padding: 28px 32px 22px !important;
 }
 
 .footer-main {
   display: grid;
   grid-template-columns: minmax(280px, 1.08fr) minmax(140px, 0.62fr) minmax(190px, 0.74fr) minmax(320px, 1fr);
-  gap: 40px;
+  gap: 28px;
   align-items: start;
 }
 
 .footer-brand {
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .footer-logo {
@@ -1078,14 +1101,14 @@ a {
 
 .footer-socials {
   display: grid;
-  gap: 14px;
-  margin-top: 14px;
+  gap: 10px;
+  margin-top: 6px;
 }
 
 .footer-social-buttons {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-wrap: nowrap;
+  gap: 8px;
 }
 
 .footer-social-button.button {
@@ -1101,12 +1124,12 @@ a {
 
 .footer-nav {
   display: grid;
-  gap: 20px;
+  gap: 14px;
 }
 
 .footer-nav > div {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .footer-nav a {
@@ -1151,23 +1174,23 @@ a {
 }
 
 .footer-separator {
-  margin: 30px 0 22px;
+  margin: 20px 0 16px;
 }
 
 .footer-separator--low {
-  margin: 22px 0 18px;
+  margin: 16px 0 14px;
 }
 
 .footer-payments-row {
   display: grid;
   grid-template-columns: minmax(500px, 0.98fr) minmax(0, 1.18fr);
-  gap: 38px;
+  gap: 28px;
   align-items: end;
 }
 
 .footer-payments {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .footer-payments > div {
@@ -1194,7 +1217,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 22px 28px;
+  gap: 12px 20px;
 }
 
 .footer-requisite-item {
@@ -1461,7 +1484,7 @@ a {
   .topup-checkout-fields,
   .topup-checkout-fields--subscription {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 12px;
   }
 
   .topup-checkout-fields {
@@ -1492,7 +1515,10 @@ a {
   }
 
   .topup-cashback-badge.chip {
-    font-size: 0.68rem !important;
+    top: -7px;
+    right: 8px;
+    padding-inline: 6px !important;
+    font-size: 0.56rem !important;
   }
 
   .topup-cta.button {
@@ -1615,12 +1641,12 @@ a {
 
   .footer-surface {
     border-radius: 18px !important;
-    padding: 24px 18px !important;
+    padding: 20px 16px !important;
   }
 
   .footer-main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 18px;
+    gap: 18px;
   }
 
   .footer-brand,
@@ -1633,12 +1659,14 @@ a {
   }
 
   .footer-social-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
   }
 
-  .footer-social-button.button:first-child {
-    grid-column: 1 / -1;
+  .footer-social-button.button {
+    padding-inline: 10px !important;
+    font-size: 0.82rem;
   }
 
   .footer-nav {
@@ -1662,7 +1690,7 @@ a {
 
   .footer-payments-row {
     grid-template-columns: 1fr;
-    gap: 22px;
+    gap: 16px;
   }
 
   .footer-payments > div {
@@ -1685,7 +1713,7 @@ a {
 
   .footer-requisites {
     justify-content: flex-start;
-    gap: 14px;
+    gap: 10px;
   }
 
   .footer-requisite-item {
@@ -1696,5 +1724,69 @@ a {
   .footer-bottom {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+.auth-page {
+  display: flex;
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  display: flex;
+  width: min(100%, 420px);
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid var(--border) !important;
+  border-radius: 24px !important;
+  background: var(--surface-secondary);
+  padding: 32px !important;
+}
+
+.auth-logo {
+  align-self: flex-start;
+}
+
+.auth-heading {
+  display: grid;
+  gap: 6px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-submit.button {
+  --ctrl-h: 48px;
+  height: var(--ctrl-h) !important;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
+  margin-top: 6px;
+  font-weight: 800 !important;
+  background: var(--accent) !important;
+}
+
+.auth-separator {
+  margin: 2px 0;
+}
+
+.auth-switch {
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-switch:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .auth-card {
+    border-radius: 18px !important;
+    padding: 24px !important;
   }
 }
