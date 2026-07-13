@@ -29,7 +29,6 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ChatBubbleLeftRightIcon,
-  CheckCircleIcon,
   ComputerDesktopIcon,
   CurrencyDollarIcon,
   DevicePhoneMobileIcon,
@@ -731,7 +730,6 @@ function Footer() {
     { label: "ОГРНИП 123456789012345", icon: ShieldCheckIcon },
     { label: "hello@digimoll.ru", icon: EnvelopeIcon },
   ];
-  const supportPoints = ["Быстрая помощь в любое время", "Решение любых вопросов", "Забота о каждом клиенте"];
 
   return (
     <footer className="app-shell footer-section">
@@ -802,14 +800,6 @@ function Footer() {
                 </Button>
               </Card.Footer>
             </Card>
-            <div className="footer-support-list">
-              {supportPoints.map((item) => (
-                <div key={item}>
-                  <CheckCircleIcon aria-hidden="true" />
-                  <Typography color="muted" type="body-sm">{item}</Typography>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
 

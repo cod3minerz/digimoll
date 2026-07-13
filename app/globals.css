@@ -104,6 +104,15 @@ a {
 
 :root {
   --squircle: squircle;
+  /* Apple-style continuous corner: radius is always this fraction of a
+     control's own height, so every button/field reads as one consistent
+     shape regardless of size or breakpoint. Set --ctrl-h per element and
+     use border-radius: var(--ctrl-radius). */
+  --squircle-ratio: 0.46;
+  /* Apple's official app-icon corner radius: ~22.37% of the icon's own
+     size (the iOS/iPadOS app icon superellipse template ratio) — used for
+     service/app icon tiles specifically, not controls. */
+  --app-icon-ratio: 0.2237;
 }
 
 @supports (corner-shape: squircle) {
@@ -149,12 +158,13 @@ a {
 }
 
 .service-mark {
+  --ctrl-h: 56px;
   display: grid;
-  width: 56px;
-  height: 56px;
+  width: var(--ctrl-h);
+  height: var(--ctrl-h);
   place-items: center;
   border: 1px solid var(--border);
-  border-radius: var(--field-radius);
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   background: var(--surface-secondary);
   color: var(--foreground);
   font-weight: 800;
@@ -170,8 +180,9 @@ a {
 }
 
 .header-catalog.button {
-  min-height: 48px !important;
-  border-radius: 22px !important;
+  --ctrl-h: 48px;
+  min-height: var(--ctrl-h) !important;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
 }
 
 .header-search {
@@ -179,9 +190,10 @@ a {
 }
 
 .header-search-group.search-field__group {
-  height: 48px;
+  --ctrl-h: 48px;
+  height: var(--ctrl-h);
   border: 1px solid var(--border);
-  border-radius: 22px;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   background: var(--field-background);
   padding-inline: 6px;
 }
@@ -207,8 +219,9 @@ a {
 }
 
 .header-action.button {
+  --ctrl-h: 52px;
   display: flex;
-  min-height: 52px !important;
+  min-height: var(--ctrl-h) !important;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -217,7 +230,7 @@ a {
   background: transparent !important;
   padding: 6px 16px !important;
   color: var(--foreground) !important;
-  border-radius: 22px !important;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
 }
 
 .header-action.button:hover {
@@ -268,12 +281,14 @@ a {
   }
 
   .mobile-nav-item {
+    --ctrl-h: 55px;
     display: flex;
     min-width: 64px;
+    min-height: var(--ctrl-h);
     flex-direction: column;
     align-items: center;
     gap: 3px;
-    border-radius: 18px;
+    border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
     padding: 7px 8px;
     color: var(--muted);
     font-size: 0.66rem;
@@ -459,12 +474,13 @@ a {
 }
 
 .topup-shelf-icon {
+  --ctrl-h: 72px;
   display: grid;
-  width: 72px;
-  height: 72px;
+  width: var(--ctrl-h);
+  height: var(--ctrl-h);
   place-items: center;
   border: 1px solid transparent;
-  border-radius: 20px;
+  border-radius: calc(var(--ctrl-h) * var(--app-icon-ratio));
   background: var(--surface-secondary);
 }
 
@@ -634,22 +650,24 @@ a {
 }
 
 .topup-input.input {
-  min-height: 48px;
+  --ctrl-h: 48px;
+  min-height: var(--ctrl-h);
   border: 0;
-  border-radius: 20px;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   background: var(--field-background);
   font-size: 0.94rem;
   padding-inline: 14px;
 }
 
 .topup-number-group {
+  --ctrl-h: 48px;
   display: grid !important;
-  min-height: 48px;
+  min-height: var(--ctrl-h);
   grid-template-columns: 34px minmax(0, 1fr) auto 34px;
   align-items: center;
   overflow: hidden;
   border: 0;
-  border-radius: 20px;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   background: var(--field-background);
 }
 
@@ -694,10 +712,11 @@ a {
 }
 
 .topup-tariff-pill {
+  --ctrl-h: 48px;
   position: relative;
-  min-height: 48px !important;
+  min-height: var(--ctrl-h) !important;
   border: 0 !important;
-  border-radius: 18px !important;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
   background: var(--field-background);
   padding: 10px 10px 10px 38px !important;
 }
@@ -742,8 +761,9 @@ a {
 }
 
 .topup-cta.button {
-  min-height: 48px !important;
-  border-radius: 20px !important;
+  --ctrl-h: 48px;
+  min-height: var(--ctrl-h) !important;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
   font-size: 0.95rem !important;
   font-weight: 800 !important;
   background: var(--accent) !important;
@@ -775,12 +795,13 @@ a {
 }
 
 .promo-heading-icon {
+  --ctrl-h: 44px;
   display: grid;
   flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+  width: var(--ctrl-h);
+  height: var(--ctrl-h);
   place-items: center;
-  border-radius: 14px;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   background: color-mix(in oklab, var(--accent) 20%, var(--surface-tertiary));
   color: var(--accent);
 }
@@ -1000,8 +1021,9 @@ a {
 }
 
 .footer-social-button.button {
-  min-height: 44px !important;
-  border-radius: 16px !important;
+  --ctrl-h: 44px;
+  min-height: var(--ctrl-h) !important;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
 }
 
 .footer-social-button img {
@@ -1055,28 +1077,9 @@ a {
 }
 
 .footer-support-card .card__footer .button {
-  min-height: 48px !important;
-  border-radius: 18px !important;
-}
-
-.footer-support-list {
-  display: grid;
-  gap: 16px;
-  border-left: 1px solid var(--border);
-  padding-left: 24px;
-}
-
-.footer-support-list > div {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.footer-support-list svg {
-  width: 20px;
-  height: 20px;
-  flex: 0 0 auto;
-  color: var(--accent);
+  --ctrl-h: 48px;
+  min-height: var(--ctrl-h) !important;
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
 }
 
 .footer-separator {
@@ -1199,9 +1202,10 @@ a {
 }
 
 .category-card .service-mark {
-  width: 72px;
-  height: 72px;
-  border-radius: 18px;
+  --ctrl-h: 72px;
+  width: var(--ctrl-h);
+  height: var(--ctrl-h);
+  border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   background: color-mix(in oklab, var(--surface) 72%, transparent);
 }
 
@@ -1333,9 +1337,10 @@ a {
   }
 
   .topup-shelf-icon {
-    width: 62px;
-    height: 62px;
-    border-radius: 16px;
+    --ctrl-h: 62px;
+    width: var(--ctrl-h);
+    height: var(--ctrl-h);
+    border-radius: calc(var(--ctrl-h) * var(--app-icon-ratio));
   }
 
   .topup-shelf-item span:last-child {
@@ -1402,8 +1407,9 @@ a {
 
   .topup-input.input,
   .topup-number-group {
-    min-height: 56px;
-    border-radius: 12px;
+    --ctrl-h: 56px;
+    min-height: var(--ctrl-h);
+    border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   }
 
   .topup-tariff-pills {
@@ -1419,8 +1425,9 @@ a {
   }
 
   .topup-cta.button {
-    min-height: 40px !important;
-    border-radius: 10px !important;
+    --ctrl-h: 44px;
+    min-height: var(--ctrl-h) !important;
+    border-radius: calc(var(--ctrl-h) * var(--squircle-ratio)) !important;
     font-size: 0.9rem !important;
   }
 
@@ -1433,9 +1440,10 @@ a {
   }
 
   .promo-heading-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    --ctrl-h: 36px;
+    width: var(--ctrl-h);
+    height: var(--ctrl-h);
+    border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   }
 
   .promo-head .typography--h3 {
@@ -1494,9 +1502,10 @@ a {
   }
 
   .category-card .service-mark {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
+    --ctrl-h: 48px;
+    width: var(--ctrl-h);
+    height: var(--ctrl-h);
+    border-radius: calc(var(--ctrl-h) * var(--squircle-ratio));
   }
 
   .category-card .card__title {
@@ -1578,11 +1587,6 @@ a {
     width: 44px;
     height: 44px;
     padding: 10px;
-  }
-
-  .footer-support-list {
-    border-left: 0;
-    padding-left: 0;
   }
 
   .footer-payments-row {
