@@ -537,8 +537,9 @@ function QuickTopUp() {
               type="submit"
             >
               Оплатить {formatRub(total)}
-              <span className="topup-cta-badge font-digicoins">+{digicoinsEarned} Д</span>
+              <span className="topup-cta-badge topup-cta-badge--inline font-digicoins">+{digicoinsEarned} Д</span>
             </Button>
+            <span className="topup-cta-badge topup-cta-badge--floating font-digicoins">+{digicoinsEarned} Д</span>
           </div>
         </Form>
       </Surface>

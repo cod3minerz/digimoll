@@ -1333,13 +1333,13 @@ a {
 }
 
 .topup-payline {
+  position: relative;
   align-self: end;
 }
 
 .topup-cta-badge {
   display: inline-flex;
   align-items: center;
-  margin-left: 8px;
   border-radius: 999px;
   padding: 3px 9px;
   background: var(--accent-foreground);
@@ -1348,6 +1348,28 @@ a {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.01em;
+}
+
+.topup-cta-badge--inline {
+  margin-left: 8px;
+}
+
+.topup-cta-badge--floating {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .topup-cta-badge--inline {
+    display: none;
+  }
+
+  .topup-cta-badge--floating {
+    position: absolute;
+    z-index: 2;
+    top: -8px;
+    right: 10px;
+    display: inline-flex;
+  }
 }
 
 .font-digicoins {
