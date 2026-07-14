@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Card,
   Chip,
   Description,
-  Link as HeroLink,
   Separator,
   Surface,
   Switch,
@@ -15,27 +14,12 @@ import {
 } from "@heroui/react";
 import { orders, subscriptions } from "@/lib/mock-data";
 import { MobileNav } from "@/components/MobileNav";
+import { SimpleHeader } from "@/components/SimpleHeader";
+import { AuthGate } from "@/components/AuthGate";
+import { isLoggedIn } from "@/lib/mock-auth";
 
 function formatRub(value: number) {
   return new Intl.NumberFormat("ru-RU").format(value) + " ₽";
-}
-
-function AccountHeader() {
-  return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div className="app-shell flex min-h-20 items-center justify-between gap-4 py-3">
-        <HeroLink href="/">
-          <img alt="Digimoll" className="h-9 w-auto" src="/fullLogo.svg" />
-        </HeroLink>
-        <div className="flex items-center gap-3">
-          <Button onPress={() => (window.location.href = "/")} variant="secondary">
-            На главную
-          </Button>
-          <Button>Пополнить баланс</Button>
-        </div>
-      </div>
-    </header>
-  );
 }
 
 function BalanceCard() {
@@ -165,21 +149,42 @@ function ReferralCard() {
 }
 
 export default function AccountPage() {
+  const [authed, setAuthed] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setAuthed(isLoggedIn());
+  }, []);
+
   return (
     <>
-      <AccountHeader />
+      <SimpleHeader>
+        <Button onPress={() => (window.location.href = "/")} variant="secondary">
+          На главную
+        </Button>
+        <Button>Пополнить баланс</Button>
+      </SimpleHeader>
       <main className="app-shell section-gap">
-        <div className="grid gap-2">
-          <Typography type="h2">Личный кабинет</Typography>
-          <Typography color="muted" type="body">
-            Баланс, подписки, история заказов и повторные покупки в одном месте.
-          </Typography>
-        </div>
-        <Separator className="my-6" />
-        <BalanceCard />
-        <SubscriptionList />
-        <OrderHistory />
-        <ReferralCard />
+        {authed === null ? null : authed ? (
+          <>
+            <div className="grid gap-2">
+              <Typography type="h2">Личный кабинет</Typography>
+              <Typography color="muted" type="body">
+                Баланс, подписки, история заказов и повторные покупки в одном месте.
+              </Typography>
+            </div>
+            <Separator className="my-6" />
+            <BalanceCard />
+            <SubscriptionList />
+            <OrderHistory />
+            <ReferralCard />
+          </>
+        ) : (
+          <AuthGate
+            description="Войдите в аккаунт Digimoll, чтобы увидеть баланс, подписки и историю заказов."
+            next="/account"
+            title="Нужно войти"
+          />
+        )}
       </main>
       <MobileNav />
     </>

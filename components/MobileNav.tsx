@@ -1,60 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { Button, Link as HeroLink, Modal } from "@heroui/react";
-import { HeartIcon, HomeIcon, LockClosedIcon, Squares2X2Icon, UserIcon } from "@heroicons/react/24/solid";
+import { Link as HeroLink } from "@heroui/react";
+import { HeartIcon, HomeIcon, Squares2X2Icon, UserIcon } from "@heroicons/react/24/solid";
+import { CatalogSheet } from "@/components/CatalogMenu";
 
 const navItems = [
   { id: "home", label: "Главная", icon: HomeIcon, href: "/" },
-  { id: "catalog", label: "Каталог", icon: Squares2X2Icon, href: "/#categories" },
-  { id: "favorites", label: "Избранное", icon: HeartIcon, gated: true },
-  { id: "profile", label: "Профиль", icon: UserIcon, href: "/account", gated: true },
+  { id: "catalog", label: "Каталог", icon: Squares2X2Icon },
+  { id: "favorites", label: "Избранное", icon: HeartIcon, href: "/favorites" },
+  { id: "profile", label: "Профиль", icon: UserIcon, href: "/account" },
 ];
 
 export function MobileNav() {
   const pathname = usePathname();
-  const [gateOpen, setGateOpen] = useState(false);
-  const [pendingHref, setPendingHref] = useState("/account");
-  const [hash, setHash] = useState("");
-
-  useEffect(() => {
-    const updateHash = () => setHash(window.location.hash);
-    updateHash();
-    window.addEventListener("hashchange", updateHash);
-    return () => window.removeEventListener("hashchange", updateHash);
-  }, []);
+  const [catalogOpen, setCatalogOpen] = useState(false);
 
   return (
     <>
       <nav aria-label="Основная навигация" className="mobile-nav">
         {navItems.map((item) => {
-          const isActive =
-            item.id === "catalog"
-              ? pathname === "/" && hash === "#categories"
-              : item.id === "home"
-                ? pathname === "/" && hash !== "#categories"
-                : item.href
-                  ? pathname === item.href
-                  : false;
-
-          if (item.gated) {
+          if (item.id === "catalog") {
             return (
               <button
                 key={item.id}
                 className="mobile-nav-item"
-                data-active={isActive}
+                data-active={catalogOpen}
                 type="button"
-                onClick={() => {
-                  setPendingHref(item.href ?? "/account");
-                  setGateOpen(true);
-                }}
+                onClick={() => setCatalogOpen(true)}
               >
                 <item.icon aria-hidden="true" className="mobile-nav-icon" />
                 <span>{item.label}</span>
               </button>
             );
           }
+
+          const isActive = pathname === item.href;
 
           return (
             <HeroLink key={item.id} className="mobile-nav-item" data-active={isActive} href={item.href}>
@@ -65,30 +47,7 @@ export function MobileNav() {
         })}
       </nav>
 
-      <Modal.Backdrop isOpen={gateOpen} onOpenChange={setGateOpen}>
-        <Modal.Container placement="center">
-          <Modal.Dialog className="sm:max-w-[360px]">
-            <Modal.CloseTrigger />
-            <Modal.Header>
-              <Modal.Icon className="bg-accent-soft text-accent-soft-foreground">
-                <LockClosedIcon className="size-5" />
-              </Modal.Icon>
-              <Modal.Heading>Нужно войти</Modal.Heading>
-            </Modal.Header>
-            <Modal.Body>
-              <p>Чтобы посмотреть этот раздел, сначала войдите в свой аккаунт Digimoll.</p>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button slot="close" variant="secondary">
-                Отмена
-              </Button>
-              <Button onPress={() => (window.location.href = `/login?next=${encodeURIComponent(pendingHref)}`)}>
-                Войти
-              </Button>
-            </Modal.Footer>
-          </Modal.Dialog>
-        </Modal.Container>
-      </Modal.Backdrop>
+      <CatalogSheet isOpen={catalogOpen} onOpenChange={setCatalogOpen} />
     </>
   );
 }

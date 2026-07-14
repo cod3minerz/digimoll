@@ -2,6 +2,7 @@
 
 import { Suspense, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { setLoggedIn } from "@/lib/mock-auth";
 import {
   Button,
   Form,
@@ -27,6 +28,7 @@ function LoginForm() {
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoggedIn(true);
     router.push(next);
   };
 

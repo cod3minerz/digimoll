@@ -1,13 +1,12 @@
 "use client";
 
-import { type ComponentType, type SVGProps, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Accordion,
   Button,
   Card,
   Chip,
   Description,
-  Dropdown,
   FieldError,
   Form,
   Input,
@@ -17,7 +16,6 @@ import {
   NumberField,
   ProgressBar,
   ScrollShadow,
-  SearchField,
   Select,
   Separator,
   Surface,
@@ -40,42 +38,28 @@ import {
   PuzzlePieceIcon,
   ShieldCheckIcon,
   SparklesIcon,
-  Squares2X2Icon,
   TagIcon,
   UserIcon,
 } from "@heroicons/react/24/solid";
 import {
   categories,
   faqItems,
+  formatRub,
+  popularProducts,
+  productById,
   products,
   promoSlides,
   type Product,
 } from "@/lib/mock-data";
 import { MobileNav } from "@/components/MobileNav";
+import { ProductMark, TelegramIcon, serviceIconAsset } from "@/components/ProductIcon";
+import { SearchBar } from "@/components/SearchBar";
+import { CatalogMegaMenu } from "@/components/CatalogMenu";
 
 type OrderStatus = "idle" | "created" | "paid" | "processing" | "delivered" | "error";
-type HeroIcon = ComponentType<SVGProps<SVGSVGElement>>;
-
-function TelegramIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <path
-        clipRule="evenodd"
-        fillRule="evenodd"
-        d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24Zm5.94 8.19c-.19 2.02-.98 6.9-1.38 9.16-.17.96-.5 1.28-.83 1.31-.71.07-1.24-.47-1.93-.92-1.07-.7-1.68-1.14-2.72-1.82-1.2-.79-.42-1.22.26-1.93.18-.19 3.25-2.98 3.31-3.23a.24.24 0 0 0-.06-.21c-.07-.06-.16-.04-.24-.02-.1.02-1.7 1.08-4.8 3.19-.45.31-.87.46-1.24.45-.41-.01-1.19-.23-1.78-.42-.72-.23-1.29-.35-1.24-.74.03-.2.3-.4.8-.61 3.14-1.37 5.24-2.27 6.29-2.71 3-1.25 3.62-1.47 4.03-1.47.09 0 .29.02.42.13.11.09.14.21.15.3-.01.06.01.24 0 .37Z"
-      />
-    </svg>
-  );
-}
 
 const quickProductIds = ["steam-wallet", "telegram-stars", "telegram-premium", "robux"];
 const quickProducts = quickProductIds.map((id) => productById(id));
-const serviceIconAsset: Record<string, string> = {
-  "steam-wallet": "/icons/steam.svg",
-  "telegram-stars": "/icons/tg-stars.svg",
-  "telegram-premium": "/icons/tg-premium.svg",
-  robux: "/icons/robux.svg",
-};
 
 const showcaseSlides = [
   {
@@ -156,34 +140,6 @@ const amountProductConfig: Record<
   },
 };
 
-function formatRub(value: number) {
-  return new Intl.NumberFormat("ru-RU").format(value) + " ₽";
-}
-
-function productById(id: string) {
-  return products.find((product) => product.id === id) ?? products[0];
-}
-
-const categoryIconMap: Record<Product["category"], HeroIcon> = {
-  games: PuzzlePieceIcon,
-  ai: SparklesIcon,
-  subscriptions: DevicePhoneMobileIcon,
-  software: ComputerDesktopIcon,
-  telegram: TelegramIcon,
-  giftCards: GiftIcon,
-};
-
-function ProductMark({ product }: { product: Product }) {
-  const asset = serviceIconAsset[product.id];
-  const Icon = categoryIconMap[product.category];
-
-  return (
-    <span aria-hidden="true" className="service-mark">
-      {asset ? <img alt="" src={asset} /> : <Icon />}
-    </span>
-  );
-}
-
 function ServiceIcon({ product, className = "topup-tab-icon" }: { product: Product; className?: string }) {
   return (
     <span aria-hidden="true" className={className} data-product={product.id}>
@@ -208,37 +164,21 @@ function ShelfIcon({ item }: { item: (typeof serviceShelf)[number] }) {
 }
 
 function Header() {
+  const [searchOpen, setSearchOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div className="app-shell flex min-h-20 items-center gap-4 py-3">
-        <HeroLink className="shrink-0" href="/">
+      <div
+        className="app-shell flex min-h-20 items-center gap-4 py-3 header-row"
+        data-search-open={searchOpen}
+      >
+        <HeroLink className="shrink-0 header-logo" href="/">
           <img alt="Digimoll" className="h-9 w-auto" src="/fullLogo.svg" />
         </HeroLink>
 
-        <Dropdown>
-          <Button className="header-catalog hidden min-[901px]:flex" variant="secondary">
-            <Squares2X2Icon aria-hidden="true" className="ui-icon" />
-            Каталог
-          </Button>
-          <Dropdown.Popover>
-            <Dropdown.Menu className="min-w-72">
-              {categories.map((category) => (
-                <Dropdown.Item key={category.id} id={category.id} textValue={category.name}>
-                  <Label>{category.name}</Label>
-                  <Description>{category.subtitle}</Description>
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown.Popover>
-        </Dropdown>
+        <CatalogMegaMenu />
 
-        <SearchField aria-label="Поиск игр и приложений" className="header-search flex flex-1" name="search">
-          <SearchField.Group className="header-search-group">
-            <SearchField.SearchIcon className="header-search-icon" />
-            <SearchField.Input placeholder="Поиск игр и приложений" />
-            <SearchField.ClearButton className="header-search-clear" />
-          </SearchField.Group>
-        </SearchField>
+        <SearchBar onOpenChange={setSearchOpen} />
 
         <div className="header-actions ml-auto hidden min-[901px]:flex">
           <Button className="header-action" variant="secondary" onPress={() => (window.location.href = "/account")}>
@@ -249,7 +189,7 @@ function Header() {
             <TelegramIcon aria-hidden="true" className="header-action-icon" />
             <span className="header-action-label">Telegram-бот</span>
           </Button>
-          <Button className="header-action" variant="secondary" onPress={() => (window.location.href = "/account")}>
+          <Button className="header-action" variant="secondary" onPress={() => (window.location.href = "/login")}>
             <UserIcon aria-hidden="true" className="header-action-icon" />
             <span className="header-action-label">Войти</span>
           </Button>
@@ -266,6 +206,43 @@ function QuickTopUp() {
   const [tariffId, setTariffId] = useState(selectedProduct.tariffs[0].id);
   const [amount, setAmount] = useState<number | undefined>(amountProductConfig[selectedId]?.defaultValue);
   const [status, setStatus] = useState<OrderStatus>("idle");
+  const bannerRailRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const rail = bannerRailRef.current;
+    if (!rail || showcaseSlides.length < 2) return;
+
+    let userInteracting = false;
+    let resumeTimeout: number | undefined;
+
+    const handlePointerDown = () => {
+      userInteracting = true;
+      window.clearTimeout(resumeTimeout);
+    };
+    const handlePointerUp = () => {
+      resumeTimeout = window.setTimeout(() => {
+        userInteracting = false;
+      }, 4000);
+    };
+
+    rail.addEventListener("pointerdown", handlePointerDown);
+    rail.addEventListener("pointerup", handlePointerUp);
+
+    const interval = window.setInterval(() => {
+      if (userInteracting || document.hidden) return;
+      const cardWidth = rail.clientWidth;
+      const maxScroll = rail.scrollWidth - cardWidth;
+      const nextLeft = rail.scrollLeft + cardWidth >= maxScroll - 4 ? 0 : rail.scrollLeft + cardWidth;
+      rail.scrollTo({ left: nextLeft, behavior: "smooth" });
+    }, 5000);
+
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(resumeTimeout);
+      rail.removeEventListener("pointerdown", handlePointerDown);
+      rail.removeEventListener("pointerup", handlePointerUp);
+    };
+  }, []);
 
   const tariff = selectedProduct.tariffs.find((item) => item.id === tariffId) ?? selectedProduct.tariffs[0];
   const amountConfig = amountProductConfig[selectedId];
@@ -311,7 +288,7 @@ function QuickTopUp() {
 
   return (
     <section className="app-shell topup-showcase" id="topup">
-      <ScrollShadow hideScrollBar className="topup-banner-carousel">
+      <ScrollShadow ref={bannerRailRef} hideScrollBar className="topup-banner-carousel">
         {showcaseSlides.map((slide, index) => (
           <Card key={slide.id} className="topup-banner-card" data-tone={slide.id} variant="secondary">
             <Card.Content>
@@ -651,50 +628,57 @@ function PromoCarousel() {
   );
 }
 
-function CategoriesGrid() {
-  const trustItems = ["Безопасная сделка", "Мгновенная доставка", "Поддержка 24/7"];
+const shopDiscounts: Record<string, { originalPrice: number }> = {
+  "steam-wallet": { originalPrice: 500 },
+  "ps-plus": { originalPrice: 1990 },
+  "vpn-pack": { originalPrice: 429 },
+};
+
+const shopSalesById: Record<string, number> = Object.fromEntries(
+  popularProducts.map((item) => [item.productId, item.sales]),
+);
+
+function ProductCard({ product }: { product: Product }) {
+  const discount = shopDiscounts[product.id];
+  const percentOff = discount ? Math.round((1 - product.priceFrom / discount.originalPrice) * 100) : 0;
+  const sales = shopSalesById[product.id];
 
   return (
-    <section className="app-shell categories-section" id="categories">
-      <div className="categories-head">
+    <a className="shop-card" data-discount={Boolean(discount)} href="#topup">
+      <div className="shop-card-media">
+        <ProductMark product={product} />
+        {discount ? <span className="shop-card-badge">-{percentOff}%</span> : null}
+      </div>
+      <div className="shop-card-body">
+        <span className="shop-card-name">{product.name}</span>
+        <span className="shop-card-subtitle">{sales ? `${sales.toLocaleString("ru-RU")} покупок` : product.subtitle}</span>
+        <div className="shop-card-price-row">
+          <span className="shop-card-price" data-discount={Boolean(discount)}>
+            {formatRub(product.priceFrom)}
+          </span>
+          {discount ? <span className="shop-card-price-old">{formatRub(discount.originalPrice)}</span> : null}
+        </div>
+      </div>
+    </a>
+  );
+}
+
+function TopProducts() {
+  return (
+    <section className="app-shell shop-section">
+      <div className="shop-head">
         <Chip color="accent" size="sm" variant="soft">
-          Каталог
+          Топ товары
         </Chip>
-        <Typography type="h2">Категории</Typography>
-        <Typography color="muted" type="body">Выберите категорию и найдите нужный цифровой товар за пару кликов</Typography>
+        <Typography type="h2">Популярные товары</Typography>
+        <Typography color="muted" type="body">Самые востребованные сервисы за последнюю неделю</Typography>
       </div>
 
-      <div className="categories-grid">
-        {categories.map((category) => {
-          const product = productById(category.featuredProductId);
-
-          return (
-            <Card key={category.id} className="category-card" data-category={category.id} variant="tertiary">
-              <Card.Header>
-                <ProductMark product={product} />
-                <div>
-                  <Card.Title>{category.name}</Card.Title>
-                  <Card.Description>{category.subtitle}</Card.Description>
-                </div>
-              </Card.Header>
-              <Card.Footer>
-                <Chip color="default" variant="soft">от {formatRub(category.priceFrom)}</Chip>
-                <Button isIconOnly aria-label={`Открыть ${category.name}`} variant="secondary" onPress={() => (window.location.href = "#topup")}>
-                  <ArrowRightIcon aria-hidden="true" className="ui-icon" />
-                </Button>
-              </Card.Footer>
-            </Card>
-          );
-        })}
-      </div>
-
-      <Surface className="categories-trust" variant="secondary">
-        {trustItems.map((item) => (
-          <Chip key={item} color="accent" variant="soft">
-            {item}
-          </Chip>
+      <div className="shop-grid">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
         ))}
-      </Surface>
+      </div>
     </section>
   );
 }
@@ -863,7 +847,7 @@ export default function Home() {
       <main>
         <QuickTopUp />
         <PromoCarousel />
-        <CategoriesGrid />
+        <TopProducts />
         <FAQ />
       </main>
       <Footer />

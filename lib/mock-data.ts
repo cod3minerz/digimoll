@@ -236,6 +236,15 @@ export const popularProducts = [
   { productId: "chatgpt-plus", sales: 4890, tag: "Хит" },
 ];
 
+export const popularSearches = [
+  "Steam пополнение",
+  "Telegram Premium",
+  "Robux",
+  "ChatGPT Plus",
+  "PS Plus",
+  "VPN",
+];
+
 export const reviews = [
   {
     id: "r1",
@@ -295,3 +304,11 @@ export const faqItems = [
     content: "Вы включаете продление в кабинете, Digimoll заранее напоминает о списании и продлевает доступ без ручных действий.",
   },
 ];
+
+export function formatRub(value: number) {
+  return new Intl.NumberFormat("ru-RU").format(value) + " ₽";
+}
+
+export function productById(id: string) {
+  return products.find((product) => product.id === id) ?? products[0];
+}
