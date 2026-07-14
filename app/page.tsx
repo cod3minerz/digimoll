@@ -13,7 +13,9 @@ import {
   Label,
   ListBox,
   Link as HeroLink,
+  Modal,
   NumberField,
+  Popover,
   ProgressBar,
   ScrollShadow,
   Select,
@@ -33,6 +35,7 @@ import {
   EnvelopeIcon,
   GiftIcon,
   IdentificationIcon,
+  InformationCircleIcon,
   MinusIcon,
   PlusIcon,
   PuzzlePieceIcon,
@@ -206,6 +209,8 @@ function QuickTopUp() {
   const [tariffId, setTariffId] = useState(selectedProduct.tariffs[0].id);
   const [amount, setAmount] = useState<number | undefined>(amountProductConfig[selectedId]?.defaultValue);
   const [status, setStatus] = useState<OrderStatus>("idle");
+  const [promoModalOpen, setPromoModalOpen] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
   const bannerRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -259,6 +264,12 @@ function QuickTopUp() {
         ? "Логин / email аккаунта"
         : "Логин / UID";
   const inputPlaceholder = selectedProduct.category === "telegram" ? "username" : "Ваш логин";
+  const loginHint =
+    selectedProduct.category === "telegram"
+      ? "Укажите username вашего Telegram-аккаунта без символа @. Найти его можно в приложении: Настройки → Имя пользователя."
+      : selectedProduct.skuType === "code"
+        ? "Укажите email аккаунта, на который нужно выдать товар."
+        : "Укажите UID вашего профиля Steam — числовой идентификатор из ссылки на профиль в настройках Steam.";
   const checkoutTitle =
     selectedId === "steam-wallet"
       ? "Пополнить баланс"
@@ -370,10 +381,12 @@ function QuickTopUp() {
         </Tabs>
 
         <div className="topup-checkout-heading">
-          <Typography type="h3">{checkoutTitle}</Typography>
-          <Typography color="muted" type="body-sm">
-            {isSubscription ? "Автовыдача · выберите срок" : `Автовыдача · ${selectedProduct.deliveryEta}`}
-          </Typography>
+          <div className="topup-heading-row">
+            <Typography type="h3">{checkoutTitle}</Typography>
+            <Chip className="topup-fee-badge" color="accent" size="sm" variant="primary">
+              0%
+            </Chip>
+          </div>
         </div>
 
         <Form className="topup-checkout-form" onSubmit={submitOrder}>
@@ -387,7 +400,19 @@ function QuickTopUp() {
               value={login}
               onChange={setLogin}
             >
-              <Label className="topup-section-label">{formLabel}</Label>
+              <div className="topup-label-row">
+                <Label className="topup-section-label">{formLabel}</Label>
+                <Popover>
+                  <Button aria-label="Подсказка" className="topup-hint-trigger" isIconOnly type="button" variant="tertiary">
+                    <InformationCircleIcon className="ui-icon" />
+                  </Button>
+                  <Popover.Content className="max-w-72">
+                    <Popover.Dialog>
+                      <p>{loginHint}</p>
+                    </Popover.Dialog>
+                  </Popover.Content>
+                </Popover>
+              </div>
               <Input className="topup-input" placeholder={inputPlaceholder} variant="secondary" />
               {login.length > 0 && !hasLogin ? (
                 <FieldError>Введите минимум 3 символа.</FieldError>
@@ -408,7 +433,9 @@ function QuickTopUp() {
                 variant="secondary"
                 onChange={setAmount}
               >
-                <Label className="topup-section-label">{amountConfig.label}</Label>
+                <div className="topup-label-row">
+                  <Label className="topup-section-label">{amountConfig.label}</Label>
+                </div>
                 <NumberField.Group className="topup-number-group">
                   <NumberField.DecrementButton className="topup-stepper-button">
                     <MinusIcon aria-hidden="true" />
@@ -436,7 +463,9 @@ function QuickTopUp() {
                 variant="secondary"
                 onChange={(key) => key && setTariffId(String(key))}
               >
-                <Label className="topup-section-label">Срок подписки</Label>
+                <div className="topup-label-row">
+                  <Label className="topup-section-label">Срок подписки</Label>
+                </div>
                 <Select.Trigger className="topup-select-trigger">
                   <Select.Value>
                     {({ defaultChildren, isPlaceholder }) => {
@@ -479,8 +508,18 @@ function QuickTopUp() {
             )}
           </div>
 
+          <div className="topup-meta-row">
+            <Chip className="topup-fee-chip" color="default" size="sm" variant="soft">
+              Комиссия 0%
+            </Chip>
+            <button className="topup-promo-link" type="button" onClick={() => setPromoModalOpen(true)}>
+              Ввести промокод
+              <ArrowRightIcon aria-hidden="true" className="ui-icon" />
+            </button>
+          </div>
+
           {status !== "idle" ? (
-            <ProgressBar aria-label="Статус заказа" value={progress || 30}>
+            <ProgressBar aria-label="Статус заказа" className="topup-order-progress" value={progress || 30}>
               <Label>{statusCopy[status]}</Label>
               <ProgressBar.Output />
               <ProgressBar.Track>
@@ -498,13 +537,33 @@ function QuickTopUp() {
               type="submit"
             >
               Оплатить {formatRub(total)}
+              <span className="topup-cta-badge font-digicoins">+{digicoinsEarned} Д</span>
             </Button>
-            <Chip className="topup-cashback-badge" color="accent" size="sm" variant="soft">
-              <span className="font-digicoins">+{digicoinsEarned} ДигиКоинов</span>
-            </Chip>
           </div>
         </Form>
       </Surface>
+
+      <Modal.Backdrop isOpen={promoModalOpen} onOpenChange={setPromoModalOpen}>
+        <Modal.Container placement="center">
+          <Modal.Dialog className="sm:max-w-[360px]">
+            <Modal.CloseTrigger />
+            <Modal.Header>
+              <Modal.Heading>Промокод</Modal.Heading>
+            </Modal.Header>
+            <Modal.Body>
+              <TextField fullWidth name="promoCode" value={promoCode} onChange={setPromoCode}>
+                <Input className="topup-input" placeholder="Введите промокод" variant="secondary" />
+              </TextField>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button slot="close" variant="secondary">
+                Отмена
+              </Button>
+              <Button slot="close">Применить</Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal.Container>
+      </Modal.Backdrop>
     </section>
   );
 }
