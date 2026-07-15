@@ -1562,7 +1562,7 @@ a {
 .product-card-cover {
   position: relative;
   display: grid;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
   width: 100%;
   place-items: center;
   overflow: hidden;
