@@ -28,12 +28,9 @@ import {
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
-  ChatBubbleLeftRightIcon,
   ComputerDesktopIcon,
   DevicePhoneMobileIcon,
-  EnvelopeIcon,
   GiftIcon,
-  IdentificationIcon,
   InformationCircleIcon,
   MinusIcon,
   PlusIcon,
@@ -41,7 +38,6 @@ import {
   ShieldCheckIcon,
   SparklesIcon,
   TagIcon,
-  UserIcon,
 } from "@heroicons/react/24/solid";
 import {
   faqItems,
@@ -684,12 +680,12 @@ function TopProducts() {
 
 function FAQ() {
   return (
-    <section className="app-shell section-gap">
+    <section className="app-shell section-gap" id="faq">
       <Typography align="center" type="h2">Частые вопросы</Typography>
       <Typography align="center" color="muted" type="body">
         Ответы на самые популярные вопросы о покупке и использовании товаров на Digimoll.
       </Typography>
-      <Accordion className="mt-6" variant="surface">
+      <Accordion className="mt-6 faq-accordion" variant="surface">
         {faqItems.map((item) => (
           <Accordion.Item key={item.title}>
             <Accordion.Heading>
@@ -709,8 +705,13 @@ function FAQ() {
 }
 
 function Footer() {
-  const shopLinks = ["Steam", "Telegram Stars", "Telegram Premium", "Robux", "Все категории"];
-  const infoLinks = ["Как купить", "Доставка и оплата", "Гарантии и возврат", "Отзывы", "FAQ"];
+  const footerLinks = [
+    { label: "Каталог", href: "/catalog" },
+    { label: "Как купить", href: "#topup" },
+    { label: "Доставка и оплата", href: "#topup" },
+    { label: "Гарантии и возврат", href: "#topup" },
+    { label: "FAQ", href: "#faq" },
+  ];
   const socialLinks = [
     { label: "Telegram", icon: TelegramIcon, href: "#topup", primary: true },
     { label: "VK", asset: "/social/vk.svg", href: "#topup" },
@@ -722,90 +723,54 @@ function Footer() {
     { label: "Mastercard", src: "/payments/mastercard.svg" },
     { label: "СБП", src: "/payments/sbp.svg" },
   ];
-  const requisites = [
-    { label: "ИП Иванов И.И.", icon: UserIcon },
-    { label: "ИНН 123456789012", icon: IdentificationIcon },
-    { label: "ОГРНИП 123456789012345", icon: ShieldCheckIcon },
-    { label: "hello@digimoll.ru", icon: EnvelopeIcon },
-  ];
 
   return (
     <footer className="app-shell footer-section">
       <Surface className="footer-surface" variant="secondary">
-        <div className="footer-main">
+        <div className="footer-top">
           <div className="footer-brand">
             <img alt="Digimoll" className="footer-logo" src="/fullLogo.svg" />
-            <Typography color="muted" type="body-sm">
-              Цифровой маркетплейс аккаунтов, подписок и цифровых товаров с моментальной доставкой.
-            </Typography>
             <Chip className="footer-safe-badge" color="accent" variant="soft">
               <ShieldCheckIcon aria-hidden="true" className="ui-icon" />
               Безопасные покупки
             </Chip>
-
-            <div className="footer-socials">
-              <Typography type="h5">Мы в соцсетях</Typography>
-              <div className="footer-social-buttons">
-                {socialLinks.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Button
-                      key={item.label}
-                      className="footer-social-button"
-                      variant={item.primary ? "primary" : "secondary"}
-                      onPress={() => (window.location.href = item.href)}
-                    >
-                      {Icon ? <Icon aria-hidden="true" className="ui-icon" /> : <img alt="" src={item.asset} />}
-                      {item.label}
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
 
-          <nav className="footer-nav" aria-label="Магазин">
-            <Typography type="h5">Магазин</Typography>
-            <div>
-              {shopLinks.map((item) => (
-                <HeroLink key={item} href="#topup">{item}</HeroLink>
-              ))}
-            </div>
+          <nav className="footer-links" aria-label="Навигация">
+            {footerLinks.map((item) => (
+              <HeroLink key={item.label} href={item.href}>{item.label}</HeroLink>
+            ))}
           </nav>
 
-          <nav className="footer-nav" aria-label="Информация">
-            <Typography type="h5">Информация</Typography>
-            <div>
-              {infoLinks.map((item) => (
-                <HeroLink key={item} href="#topup">{item}</HeroLink>
-              ))}
+          <div className="footer-actions">
+            <Button className="footer-support-button" variant="secondary">
+              <TelegramIcon aria-hidden="true" className="ui-icon" />
+              Поддержка 24/7
+            </Button>
+            <div className="footer-social-buttons">
+              {socialLinks.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Button
+                    key={item.label}
+                    aria-label={item.label}
+                    className="footer-social-button"
+                    variant={item.primary ? "primary" : "secondary"}
+                    onPress={() => (window.location.href = item.href)}
+                  >
+                    {Icon ? <Icon aria-hidden="true" className="ui-icon" /> : <img alt="" src={item.asset} />}
+                  </Button>
+                );
+              })}
             </div>
-          </nav>
-
-          <div className="footer-support">
-            <Card className="footer-support-card" variant="tertiary">
-              <Card.Header>
-                <ChatBubbleLeftRightIcon aria-hidden="true" className="footer-support-icon" />
-                <div>
-                  <Card.Title>Поддержка 24/7</Card.Title>
-                  <Card.Description>Мы всегда на связи и готовы помочь</Card.Description>
-                </div>
-              </Card.Header>
-              <Card.Footer>
-                <Button fullWidth>
-                  <TelegramIcon aria-hidden="true" className="ui-icon" />
-                  Telegram: @digimoll_support
-                </Button>
-              </Card.Footer>
-            </Card>
           </div>
         </div>
 
         <Separator className="footer-separator" />
 
-        <div className="footer-payments-row">
+        <div className="footer-bottom-row">
           <div className="footer-payments">
-            <Typography type="body-sm">Мы принимаем</Typography>
+            <Typography color="muted" type="body-sm">Мы принимаем</Typography>
             <div>
               {paymentLogos.map((item) => (
                 <span key={item.label} className="footer-payment-logo">
@@ -815,24 +780,10 @@ function Footer() {
             </div>
           </div>
 
-          <div className="footer-requisites">
-            {requisites.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.label} className="footer-requisite-item">
-                  <Icon aria-hidden="true" />
-                  <Typography color="muted" type="body-sm">{item.label}</Typography>
-                </div>
-              );
-            })}
+          <div className="footer-legal">
+            <Typography color="muted" type="body-sm">© 2026 Digimoll — Все права защищены</Typography>
+            <Typography color="muted" type="body-sm">ИП Иванов И.И. · ИНН 123456789012 · hello@digimoll.ru</Typography>
           </div>
-        </div>
-
-        <Separator className="footer-separator footer-separator--low" />
-
-        <div className="footer-bottom">
-          <Typography color="muted" type="body-sm">© 2026 Digimoll — Все права защищены</Typography>
-          <Typography color="muted" type="body-sm">Покупая у нас, вы соглашаетесь с условиями использования сервиса</Typography>
         </div>
       </Surface>
     </footer>
