@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, Surface, Typography } from "@heroui/react";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { MobileNav } from "@/components/MobileNav";
-import { SimpleHeader } from "@/components/SimpleHeader";
+import { SiteHeader } from "@/components/SiteHeader";
 import { AuthGate } from "@/components/AuthGate";
 import { isLoggedIn } from "@/lib/mock-auth";
 
@@ -36,11 +36,7 @@ export default function FavoritesPage() {
 
   return (
     <>
-      <SimpleHeader>
-        <Button onPress={() => (window.location.href = "/")} variant="secondary">
-          На главную
-        </Button>
-      </SimpleHeader>
+      <SiteHeader />
       <main className="app-shell section-gap">
         <div className="grid gap-2">
           <Typography type="h2">Избранное</Typography>

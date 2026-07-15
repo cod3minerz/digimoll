@@ -312,3 +312,51 @@ export function formatRub(value: number) {
 export function productById(id: string) {
   return products.find((product) => product.id === id) ?? products[0];
 }
+
+export type CatalogCategory = {
+  slug: string;
+  name: string;
+  tone: "accent" | "warning" | "success" | "muted";
+};
+
+export const catalogCategories: CatalogCategory[] = [
+  { slug: "popular", name: "Популярное", tone: "accent" },
+  { slug: "game-currency", name: "Игровая валюта", tone: "warning" },
+  { slug: "topup", name: "Пополнение баланса", tone: "success" },
+  { slug: "subscriptions", name: "Подписки", tone: "muted" },
+];
+
+export type CatalogProduct = {
+  id: string;
+  name: string;
+  priceFrom: number;
+  originalPrice?: number;
+  categories: string[];
+};
+
+export const catalogProducts: CatalogProduct[] = [
+  { id: "steam-wallet", name: "Steam Wallet", priceFrom: 450, originalPrice: 500, categories: ["popular", "topup"] },
+  { id: "fortnite-vbucks", name: "Fortnite V-Bucks", priceFrom: 590, categories: ["popular", "game-currency"] },
+  { id: "playstation-store", name: "PlayStation Store", priceFrom: 990, categories: ["popular", "topup"] },
+  { id: "roblox-robux", name: "Roblox Robux", priceFrom: 139, categories: ["popular", "game-currency"] },
+  { id: "discord-nitro", name: "Discord Nitro", priceFrom: 399, categories: ["popular", "subscriptions"] },
+  { id: "pubg-uc", name: "PUBG UC", priceFrom: 249, originalPrice: 299, categories: ["popular", "game-currency"] },
+  { id: "mobile-legends-diamonds", name: "Mobile Legends Diamonds", priceFrom: 199, categories: ["game-currency"] },
+  { id: "free-fire-diamonds", name: "Free Fire Diamonds", priceFrom: 149, categories: ["game-currency"] },
+  { id: "valorant-points", name: "Valorant Points", priceFrom: 359, categories: ["game-currency"] },
+  { id: "lol-rp", name: "League of Legends RP", priceFrom: 429, categories: ["game-currency"] },
+  { id: "cod-points", name: "Call of Duty Points", priceFrom: 599, categories: ["game-currency"] },
+  { id: "apex-coins", name: "Apex Coins", priceFrom: 499, originalPrice: 590, categories: ["game-currency"] },
+  { id: "xbox-gift-card", name: "Xbox Gift Card", priceFrom: 999, categories: ["topup"] },
+  { id: "apple-gift-card", name: "Apple Gift Card", priceFrom: 799, categories: ["topup"] },
+  { id: "xbox-game-pass", name: "Xbox Game Pass", priceFrom: 899, categories: ["subscriptions"] },
+  { id: "playstation-plus", name: "PlayStation Plus", priceFrom: 749, originalPrice: 890, categories: ["subscriptions"] },
+];
+
+export function catalogCategoryBySlug(slug: string) {
+  return catalogCategories.find((category) => category.slug === slug);
+}
+
+export function catalogProductsByCategory(slug: string) {
+  return catalogProducts.filter((product) => product.categories.includes(slug));
+}

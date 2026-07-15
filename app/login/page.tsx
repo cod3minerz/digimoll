@@ -14,6 +14,8 @@ import {
   TextField,
   Typography,
 } from "@heroui/react";
+import { SiteHeader } from "@/components/SiteHeader";
+import { MobileNav } from "@/components/MobileNav";
 
 function LoginForm() {
   const router = useRouter();
@@ -33,7 +35,9 @@ function LoginForm() {
   };
 
   return (
-    <main className="auth-page">
+    <>
+      <SiteHeader />
+      <main className="auth-page">
       <Surface className="auth-card" variant="secondary">
         <HeroLink className="auth-logo" href="/">
           <img alt="Digimoll" className="h-9 w-auto" src="/fullLogo.svg" />
@@ -91,7 +95,9 @@ function LoginForm() {
           )}
         </Typography>
       </Surface>
-    </main>
+      </main>
+      <MobileNav />
+    </>
   );
 }
 

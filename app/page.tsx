@@ -30,7 +30,6 @@ import {
   ArrowRightIcon,
   ChatBubbleLeftRightIcon,
   ComputerDesktopIcon,
-  CurrencyDollarIcon,
   DevicePhoneMobileIcon,
   EnvelopeIcon,
   GiftIcon,
@@ -45,19 +44,17 @@ import {
   UserIcon,
 } from "@heroicons/react/24/solid";
 import {
-  categories,
   faqItems,
   formatRub,
-  popularProducts,
   productById,
   products,
   promoSlides,
   type Product,
 } from "@/lib/mock-data";
 import { MobileNav } from "@/components/MobileNav";
-import { ProductMark, TelegramIcon, serviceIconAsset } from "@/components/ProductIcon";
-import { SearchBar } from "@/components/SearchBar";
-import { CatalogMegaMenu } from "@/components/CatalogMenu";
+import { TelegramIcon, serviceIconAsset } from "@/components/ProductIcon";
+import { ProductCard } from "@/components/ProductCard";
+import { SiteHeader } from "@/components/SiteHeader";
 
 type OrderStatus = "idle" | "created" | "paid" | "processing" | "delivered" | "error";
 
@@ -163,42 +160,6 @@ function ShelfIcon({ item }: { item: (typeof serviceShelf)[number] }) {
         <Icon />
       )}
     </span>
-  );
-}
-
-function Header() {
-  const [searchOpen, setSearchOpen] = useState(false);
-
-  return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div
-        className="app-shell flex min-h-20 items-center gap-4 py-3 header-row"
-        data-search-open={searchOpen}
-      >
-        <HeroLink className="shrink-0 header-logo" href="/">
-          <img alt="Digimoll" className="h-9 w-auto" src="/fullLogo.svg" />
-        </HeroLink>
-
-        <CatalogMegaMenu />
-
-        <SearchBar onOpenChange={setSearchOpen} />
-
-        <div className="header-actions ml-auto hidden min-[901px]:flex">
-          <Button className="header-action" variant="secondary" onPress={() => (window.location.href = "/account")}>
-            <CurrencyDollarIcon aria-hidden="true" className="header-action-icon header-action-icon--brand" />
-            <span className="header-action-label font-digicoins">DigiCoins</span>
-          </Button>
-          <Button className="header-action" variant="secondary">
-            <TelegramIcon aria-hidden="true" className="header-action-icon" />
-            <span className="header-action-label">Telegram-бот</span>
-          </Button>
-          <Button className="header-action" variant="secondary" onPress={() => (window.location.href = "/login")}>
-            <UserIcon aria-hidden="true" className="header-action-icon" />
-            <span className="header-action-label">Войти</span>
-          </Button>
-        </div>
-      </div>
-    </header>
   );
 }
 
@@ -694,35 +655,6 @@ const shopDiscounts: Record<string, { originalPrice: number }> = {
   "vpn-pack": { originalPrice: 429 },
 };
 
-const shopSalesById: Record<string, number> = Object.fromEntries(
-  popularProducts.map((item) => [item.productId, item.sales]),
-);
-
-function ProductCard({ product }: { product: Product }) {
-  const discount = shopDiscounts[product.id];
-  const percentOff = discount ? Math.round((1 - product.priceFrom / discount.originalPrice) * 100) : 0;
-  const sales = shopSalesById[product.id];
-
-  return (
-    <a className="shop-card" data-discount={Boolean(discount)} href="#topup">
-      <div className="shop-card-media">
-        <ProductMark product={product} />
-        {discount ? <span className="shop-card-badge">-{percentOff}%</span> : null}
-      </div>
-      <div className="shop-card-body">
-        <span className="shop-card-name">{product.name}</span>
-        <span className="shop-card-subtitle">{sales ? `${sales.toLocaleString("ru-RU")} покупок` : product.subtitle}</span>
-        <div className="shop-card-price-row">
-          <span className="shop-card-price" data-discount={Boolean(discount)}>
-            {formatRub(product.priceFrom)}
-          </span>
-          {discount ? <span className="shop-card-price-old">{formatRub(discount.originalPrice)}</span> : null}
-        </div>
-      </div>
-    </a>
-  );
-}
-
 function TopProducts() {
   return (
     <section className="app-shell shop-section">
@@ -736,7 +668,14 @@ function TopProducts() {
 
       <div className="shop-grid">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard
+            key={product.id}
+            href="#topup"
+            id={product.id}
+            name={product.name}
+            originalPrice={shopDiscounts[product.id]?.originalPrice}
+            priceFrom={product.priceFrom}
+          />
         ))}
       </div>
     </section>
@@ -903,7 +842,7 @@ function Footer() {
 export default function Home() {
   return (
     <>
-      <Header />
+      <SiteHeader />
       <main>
         <QuickTopUp />
         <PromoCarousel />

@@ -14,7 +14,7 @@ import {
 } from "@heroui/react";
 import { orders, subscriptions } from "@/lib/mock-data";
 import { MobileNav } from "@/components/MobileNav";
-import { SimpleHeader } from "@/components/SimpleHeader";
+import { SiteHeader } from "@/components/SiteHeader";
 import { AuthGate } from "@/components/AuthGate";
 import { isLoggedIn } from "@/lib/mock-auth";
 
@@ -157,12 +157,7 @@ export default function AccountPage() {
 
   return (
     <>
-      <SimpleHeader>
-        <Button onPress={() => (window.location.href = "/")} variant="secondary">
-          На главную
-        </Button>
-        <Button>Пополнить баланс</Button>
-      </SimpleHeader>
+      <SiteHeader />
       <main className="app-shell section-gap">
         {authed === null ? null : authed ? (
           <>

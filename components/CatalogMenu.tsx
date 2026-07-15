@@ -1,36 +1,35 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { Button } from "@heroui/react";
-import { ArrowRightIcon, Squares2X2Icon, XMarkIcon } from "@heroicons/react/24/solid";
-import { categories, formatRub, productById } from "@/lib/mock-data";
-import { ProductMark } from "@/components/ProductIcon";
+import { Button, Link as HeroLink } from "@heroui/react";
+import { ArrowRightIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
+import { catalogCategories, catalogProductsByCategory, formatRub } from "@/lib/mock-data";
+
+function cheapestPrice(slug: string) {
+  const items = catalogProductsByCategory(slug);
+  return items.reduce((min, item) => Math.min(min, item.priceFrom), items[0]?.priceFrom ?? 0);
+}
 
 function CatalogGrid({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="catalog-menu-grid">
-      {categories.map((category) => {
-        const product = productById(category.featuredProductId);
-
-        return (
-          <a
-            key={category.id}
-            className="catalog-menu-card"
-            data-category={category.id}
-            href="/#topup"
-            onClick={() => onNavigate?.()}
-          >
-            <ProductMark product={product} />
-            <span className="catalog-menu-card-info">
-              <span className="catalog-menu-card-name">{category.name}</span>
-              <span className="catalog-menu-card-subtitle">{category.subtitle}</span>
-              <span className="catalog-menu-card-price">от {formatRub(category.priceFrom)}</span>
-            </span>
-            <ArrowRightIcon aria-hidden="true" className="ui-icon catalog-menu-card-arrow" />
-          </a>
-        );
-      })}
+      {catalogCategories.map((category) => (
+        <a
+          key={category.slug}
+          className="catalog-menu-card"
+          href={`/catalog#${category.slug}`}
+          onClick={() => onNavigate?.()}
+        >
+          <span className="catalog-menu-mark" data-tone={category.tone}>
+            <Squares2X2Icon aria-hidden="true" className="ui-icon" />
+          </span>
+          <span className="catalog-menu-card-info">
+            <span className="catalog-menu-card-name">{category.name}</span>
+            <span className="catalog-menu-card-price">от {formatRub(cheapestPrice(category.slug))}</span>
+          </span>
+          <ArrowRightIcon aria-hidden="true" className="ui-icon catalog-menu-card-arrow" />
+        </a>
+      ))}
     </div>
   );
 }
@@ -72,63 +71,11 @@ export function CatalogMegaMenu() {
 
       <div className="catalog-mega-panel" data-open={open}>
         <CatalogGrid onNavigate={() => setOpen(false)} />
+        <HeroLink className="catalog-mega-footer" href="/catalog" onPress={() => setOpen(false)}>
+          Все категории
+          <ArrowRightIcon aria-hidden="true" className="ui-icon" />
+        </HeroLink>
       </div>
     </div>
-  );
-}
-
-export function CatalogSheet({
-  isOpen,
-  onOpenChange,
-}: {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onOpenChange(false);
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onOpenChange]);
-
-  if (!mounted) return null;
-
-  return createPortal(
-    <>
-      <div
-        aria-hidden="true"
-        className="catalog-sheet-backdrop"
-        data-open={isOpen}
-        onClick={() => onOpenChange(false)}
-      />
-      <div aria-label="Каталог" className="catalog-sheet" data-open={isOpen} role="dialog">
-        <div className="catalog-sheet-handle" />
-        <div className="catalog-sheet-head">
-          <span className="catalog-sheet-title">Каталог</span>
-          <button
-            aria-label="Закрыть каталог"
-            className="catalog-sheet-close"
-            type="button"
-            onClick={() => onOpenChange(false)}
-          >
-            <XMarkIcon className="ui-icon" />
-          </button>
-        </div>
-        <div className="catalog-sheet-body">
-          <CatalogGrid onNavigate={() => onOpenChange(false)} />
-        </div>
-      </div>
-    </>,
-    document.body,
   );
 }
