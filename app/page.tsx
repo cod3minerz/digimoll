@@ -80,10 +80,10 @@ const showcaseSlides = [
 
 const serviceShelf = [
   { id: "telegram-premium", label: "Telegram" },
-  { id: "robux", label: "Robux", badge: "Новое" },
-  { id: "telegram-stars", label: "Stars", badge: "Новое" },
+  { id: "robux", label: "Robux" },
+  { id: "telegram-stars", label: "Stars" },
   { id: "steam-wallet", label: "Steam" },
-  { id: "chatgpt", label: "ChatGPT", fallback: SparklesIcon, badge: "Новое" },
+  { id: "chatgpt", label: "ChatGPT", fallback: SparklesIcon },
   { id: "playstation", label: "PS Plus", fallback: PuzzlePieceIcon },
   { id: "apple", label: "App Store", fallback: DevicePhoneMobileIcon },
   { id: "software", label: "VPN", fallback: ComputerDesktopIcon },
@@ -301,11 +301,6 @@ function QuickTopUp() {
               variant="ghost"
               onPress={() => isQuick && chooseProduct(item.id)}
             >
-              {item.badge ? (
-                <Chip className="topup-shelf-badge" color="success" size="sm" variant="primary">
-                  {item.badge}
-                </Chip>
-              ) : null}
               <ShelfIcon item={item} />
               <span>{item.label}</span>
             </Button>
@@ -357,20 +352,26 @@ function QuickTopUp() {
               value={login}
               onChange={setLogin}
             >
-              <div className="topup-label-row">
-                <Label className="topup-section-label">{formLabel}</Label>
-                <Popover>
-                  <Button aria-label="Подсказка" className="topup-hint-trigger" isIconOnly type="button" variant="tertiary">
-                    <InformationCircleIcon className="ui-icon" />
-                  </Button>
-                  <Popover.Content className="max-w-72">
-                    <Popover.Dialog>
-                      <p>{loginHint}</p>
-                    </Popover.Dialog>
-                  </Popover.Content>
-                </Popover>
-              </div>
-              <Input className="topup-input" placeholder={inputPlaceholder} variant="secondary" />
+              <Label className="topup-floating-label">{formLabel}</Label>
+              <Input
+                autoComplete="off"
+                autoCorrect="off"
+                className="topup-input"
+                data-1p-ignore
+                placeholder=" "
+                spellCheck={false}
+                variant="secondary"
+              />
+              <Popover>
+                <Button aria-label="Подсказка" className="topup-hint-trigger" isIconOnly type="button" variant="tertiary">
+                  <InformationCircleIcon className="ui-icon" />
+                </Button>
+                <Popover.Content className="max-w-72">
+                  <Popover.Dialog>
+                    <p>{loginHint}</p>
+                  </Popover.Dialog>
+                </Popover.Content>
+              </Popover>
               {login.length > 0 && !hasLogin ? (
                 <FieldError>Введите минимум 3 символа.</FieldError>
               ) : null}
@@ -390,10 +391,8 @@ function QuickTopUp() {
                 variant="secondary"
                 onChange={setAmount}
               >
-                <div className="topup-label-row">
-                  <Label className="topup-section-label">{amountConfig.label}</Label>
-                </div>
                 <NumberField.Group className="topup-number-group">
+                  <Label className="topup-floating-label topup-floating-label--static">{amountConfig.label}</Label>
                   <NumberField.DecrementButton className="topup-stepper-button">
                     <MinusIcon aria-hidden="true" />
                   </NumberField.DecrementButton>
